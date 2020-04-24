@@ -3,20 +3,19 @@
   let username = "Anonymous";
   let imgSize = 50;
   let avatarFile = [];
-  $: readImage(avatarFile[0]);
+  $: readAvatar(avatarFile[0]);
 
   let hash =
     (Math.random() * 1e16).toString(16) + (Math.random() * 1e16).toString(16);
   let data = new Identicon(hash, 100).toString();
   let avatarSrc = "data:image/png;base64," + data;
 
-  function readImage(inputFile) {
+  function readAvatar(inputFile) {
     if (inputFile) {
       let src;
       let reader = new FileReader();
       reader.onload = function(e) {
-        src = e.target.result;
-        avatarSrc = src;
+        avatarSrc = e.target.result;
       };
 
       reader.readAsDataURL(inputFile);
@@ -26,11 +25,40 @@
   let editUsername = false;
   function toggleEditUsername() {
     editUsername = !editUsername;
-	}
-	
-	function newPost() {
-		console.log("TODO");
-	}
+  }
+
+  let showNewPost = false;
+  function toggleNewPost() {
+    postTitle = "";
+    postFile = [];
+    description = "";
+    postSrc = "";
+    showNewPost = !showNewPost;
+  }
+
+  let postTitle;
+  let postFile = [];
+  let description;
+  let postSrc;
+  $: readPostImage(postFile[0]);
+
+  function readPostImage(inputFile) {
+    if (inputFile) {
+      let src;
+      let reader = new FileReader();
+      reader.onload = function(e) {
+        postSrc = e.target.result;
+      };
+
+      reader.readAsDataURL(inputFile);
+    }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log("TODO");
+    toggleNewPost();
+  }
 </script>
 
 <style>
@@ -81,17 +109,26 @@
   h1:hover #edit-username {
     opacity: 1;
     cursor: pointer;
-	}
-	
-	button {
-		background-color: #98ff98;
-	}
+  }
 
-	#new-post {
-		display: block;
-		width: 100%;
-		margin: 1em 0 0 0;
-	}
+  button {
+    background-color: #98ff98;
+  }
+
+  #new-post-button {
+    display: block;
+    width: 100%;
+    margin: 1em 0 0 0;
+  }
+
+  #new-post-form {
+    margin-top: 8px;
+  }
+
+  #new-post-form * {
+    min-width: 100%;
+    max-width: 100%;
+  }
 </style>
 
 <div id="user">
@@ -113,12 +150,32 @@
     <h1>
       {#if editUsername}
         <input type="text" size="15" bind:value={username} />
-				<button on:click={toggleEditUsername}>✓</button>
+        <button on:click={toggleEditUsername}>✓</button>
       {:else}
         {username}
         <span id="edit-username" on:click={toggleEditUsername}>🖉</span>
       {/if}
     </h1>
   </span>
-	<button on:click={newPost} id="new-post">New Post</button>
+  {#if showNewPost}
+    <button on:click={toggleNewPost} id="new-post-button">✕</button>
+    <form id="new-post-form" on:submit={handleSubmit}>
+      <input
+        type="text"
+        name="title"
+        placeholder="title"
+        bind:value={postTitle} />
+      <input type="file" name="image" bind:files={postFile} id="post-upload" />
+      {#if postSrc}
+        <img src={postSrc} alt="post image preview" />
+      {/if}
+      <textarea
+        placeholder="description"
+        name="description"
+        bind:value={description} />
+      <input type="submit" value="Post" />
+    </form>
+  {:else}
+    <button on:click={toggleNewPost} id="new-post-button">+ New Post</button>
+  {/if}
 </div>
