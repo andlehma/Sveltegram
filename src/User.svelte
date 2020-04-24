@@ -1,10 +1,9 @@
 <script>
   import Identicon from "identicon.js";
-  import { posts } from "./stores.js";
+  import { posts, username } from "./stores.js";
   import { slide } from "svelte/transition";
 
   // identity
-  let username = "Anonymous";
   let imgSize = 50;
   let avatarFile = [];
   $: readAvatar(avatarFile[0]);
@@ -63,10 +62,11 @@
     posts.update(n => [
       {
         avatar: avatarSrc,
-        username: username,
+        username: $username,
         imageSrc: postSrc,
         description: description,
-        liked: false
+        liked: false,
+        comments: [],
       },
       ...n
     ]);
@@ -133,6 +133,7 @@
     display: block;
     width: 100%;
     margin: 1em 0 0 0;
+    cursor: pointer;
   }
 
   #new-post-form {
@@ -163,10 +164,10 @@
     </label>
     <h1>
       {#if editUsername}
-        <input type="text" size="10" bind:value={username} />
+        <input type="text" size="10" bind:value={$username} />
         <button on:click={toggleEditUsername}>✓</button>
       {:else}
-        {username}
+        {$username}
         <span id="edit-username" on:click={toggleEditUsername}>🖉</span>
       {/if}
     </h1>
