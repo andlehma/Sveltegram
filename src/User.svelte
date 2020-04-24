@@ -1,7 +1,9 @@
 <script>
   import Identicon from "identicon.js";
   import { posts } from "./stores.js";
+  import { slide } from "svelte/transition";
 
+  // identity
   let username = "Anonymous";
   let imgSize = 50;
   let avatarFile = [];
@@ -29,7 +31,12 @@
     editUsername = !editUsername;
   }
 
+  // new post
+  let postFile = [];
+  let description;
+  let postSrc;
   let showNewPost = false;
+
   function toggleNewPost() {
     postFile = [];
     description = "";
@@ -37,9 +44,6 @@
     showNewPost = !showNewPost;
   }
 
-  let postFile = [];
-  let description;
-  let postSrc;
   $: readPostImage(postFile[0]);
 
   function readPostImage(inputFile) {
@@ -61,7 +65,8 @@
         avatar: avatarSrc,
         username: username,
         imageSrc: postSrc,
-        description: description
+        description: description,
+        liked: false
       },
       ...n
     ]);
@@ -166,9 +171,17 @@
       {/if}
     </h1>
   </span>
+
+  <button on:click={toggleNewPost} id="new-post-button">
+    {#if showNewPost}✕{:else}+ New Post{/if}
+  </button>
+
   {#if showNewPost}
-    <button on:click={toggleNewPost} id="new-post-button">✕</button>
-    <form autocomplete="off" id="new-post-form" on:submit={handleSubmit}>
+    <form
+      transition:slide
+      autocomplete="off"
+      id="new-post-form"
+      on:submit={handleSubmit}>
       <input
         required
         type="file"
@@ -184,7 +197,5 @@
         bind:value={description} />
       <input type="submit" value="Post" />
     </form>
-  {:else}
-    <button on:click={toggleNewPost} id="new-post-button">+ New Post</button>
   {/if}
 </div>

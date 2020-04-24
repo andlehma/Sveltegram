@@ -9,9 +9,29 @@
     text-align: center;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 65% 35%;
-    grid-column-gap: 1em;
+    grid-template-columns: 64% 35%;
+    grid-column-gap: 1%;
 		font-family: 'Roboto', sans-serif;
+  }
+
+  @media all and (max-width: 832px) {
+    main {
+      max-width: 100%;
+    }
+  }
+
+  @media all and (max-width: 584px) {
+    main {
+      max-width: 70%;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+  }
+
+  @media all and (max-width: 400px) {
+    main {
+      max-width: 100%;
+    }
   }
 </style>
 
