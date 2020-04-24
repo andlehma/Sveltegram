@@ -9,7 +9,8 @@
     text-align: center;
     margin: 0 auto;
     display: grid;
-		grid-template-columns: 70% 30%;
+    grid-template-columns: 65% 35%;
+    grid-column-gap: 1em;
 		font-family: 'Roboto', sans-serif;
   }
 </style>

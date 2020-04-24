@@ -1,5 +1,7 @@
 <script>
   import Identicon from "identicon.js";
+  import { posts } from "./stores.js";
+
   let username = "Anonymous";
   let imgSize = 50;
   let avatarFile = [];
@@ -29,14 +31,12 @@
 
   let showNewPost = false;
   function toggleNewPost() {
-    postTitle = "";
     postFile = [];
     description = "";
     postSrc = "";
     showNewPost = !showNewPost;
   }
 
-  let postTitle;
   let postFile = [];
   let description;
   let postSrc;
@@ -56,7 +56,16 @@
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("TODO");
+    posts.update(n => [
+      {
+        avatar: avatarSrc,
+        username: username,
+        imageSrc: postSrc,
+        description: description
+      },
+      ...n
+    ]);
+
     toggleNewPost();
   }
 </script>
@@ -149,7 +158,7 @@
     </label>
     <h1>
       {#if editUsername}
-        <input type="text" size="15" bind:value={username} />
+        <input type="text" size="10" bind:value={username} />
         <button on:click={toggleEditUsername}>✓</button>
       {:else}
         {username}
@@ -159,13 +168,13 @@
   </span>
   {#if showNewPost}
     <button on:click={toggleNewPost} id="new-post-button">✕</button>
-    <form id="new-post-form" on:submit={handleSubmit}>
+    <form autocomplete="off" id="new-post-form" on:submit={handleSubmit}>
       <input
-        type="text"
-        name="title"
-        placeholder="title"
-        bind:value={postTitle} />
-      <input type="file" name="image" bind:files={postFile} id="post-upload" />
+        required
+        type="file"
+        name="image"
+        bind:files={postFile}
+        id="post-upload" />
       {#if postSrc}
         <img src={postSrc} alt="post image preview" />
       {/if}
